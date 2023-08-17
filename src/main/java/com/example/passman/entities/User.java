@@ -29,6 +29,9 @@ public class User {
      * The hashed password, not the actual one.
      *
      * */
+
+
+
     @Column(
             name = "password",
             nullable = false
