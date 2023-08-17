@@ -3,8 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-mvnw.cmd
-mvnw
 
 ### STS ###
 .apt_generated
@@ -20,7 +18,7 @@ mvnw
 *.iws
 *.iml
 *.ipr
-.mvn
+.mvn/
 
 ### NetBeans ###
 /nbproject/private/
@@ -34,5 +32,4 @@ build/
 
 ### VS Code ###
 .vscode/
-/.mvn/
 
