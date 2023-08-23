@@ -3,6 +3,7 @@ package com.example.passman.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -38,6 +39,10 @@ public class User {
     )
     @NonNull
     private String password;
+
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserPasswordPair> passwordPairs;
 
 
 }
