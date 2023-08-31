@@ -28,11 +28,8 @@ public class User {
 
     /**
      * The hashed password, not the actual one.
-     *
+     * This is the password that the user has to the application itself
      * */
-
-
-
     @Column(
             name = "password",
             nullable = false
