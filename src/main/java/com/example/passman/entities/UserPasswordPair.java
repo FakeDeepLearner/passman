@@ -14,7 +14,7 @@ public class UserPasswordPair {
 
     private String websiteUrl;
 
-    //Again, this is the hashed password
+    //Again, this is the hashed password to the website
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,
