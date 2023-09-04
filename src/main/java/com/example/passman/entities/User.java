@@ -11,7 +11,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
