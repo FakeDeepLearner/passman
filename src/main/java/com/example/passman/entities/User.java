@@ -18,7 +18,6 @@ public class User {
     private UUID id;
 
     @Column(
-            name = "username",
             nullable = false,
             unique = true
     )
@@ -31,7 +30,6 @@ public class User {
      * This is the password that the user has to the application itself
      * */
     @Column(
-            name = "password",
             nullable = false
     )
     @NonNull

@@ -24,7 +24,7 @@ public class UserService implements UserDBAccess{
 
     @Override
     public Optional<User> findByID(UUID id) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT FROM users WHERE id=:idParam", User.class);
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.id=:idParam", User.class);
         query.setParameter("idParam", id);
         return Optional.ofNullable(query.getSingleResult());
 
@@ -33,7 +33,7 @@ public class UserService implements UserDBAccess{
     @Override
     public Optional<User> findByUsername(String username) {
         TypedQuery<User> query = entityManager.createQuery(
-                "SELECT FROM users WHERE username=:usernameParam", User.class
+                "SELECT u FROM User u WHERE u.username=:usernameParam", User.class
         );
         query.setParameter("usernameParam", username);
         return Optional.ofNullable(query.getSingleResult());
@@ -62,8 +62,8 @@ public class UserService implements UserDBAccess{
     @Override
     public List<User> findPasswordsByJoinFetch(String username) {
         TypedQuery<User> query = entityManager.createQuery(
-                "SELECT u FROM users u " +
-                "JOIN FETCH u.passwords " +
+                "SELECT u FROM User u " +
+                "JOIN FETCH u.passwordPairs " +
                         "WHERE u.username=:nameParam", User.class);
         query.setParameter("nameParam", username);
         return query.getResultList();
