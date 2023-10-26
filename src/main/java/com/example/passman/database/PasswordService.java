@@ -28,8 +28,8 @@ public class PasswordService implements PasswordDBAccess{
 
     @Override
     public Optional<String> getPasswordById(UUID id) {
-        TypedQuery<String> query = entityManager.createQuery("SELECT password FROM users-passwords" +
-                "WHERE id=:idParam", String.class);
+        TypedQuery<String> query = entityManager.createQuery("SELECT p.password FROM UserPasswordPair p " +
+                "WHERE p.id=:idParam", String.class);
         query.setParameter("idParam", id);
 
         try{
@@ -44,8 +44,9 @@ public class PasswordService implements PasswordDBAccess{
 
     @Override
     public List<UserPasswordPair> findAllPasswordsOf(User user) {
-        TypedQuery<UserPasswordPair> query = entityManager.createQuery("SELECT FROM users-passwords " +
-                                                                    "WHERE user_id=:data", UserPasswordPair.class);
+        TypedQuery<UserPasswordPair> query = entityManager.createQuery("SELECT p FROM UserPasswordPair p " +
+                                                                    "WHERE p.user.id=:data",
+                UserPasswordPair.class);
         query.setParameter("data", user.getId());
         return query.getResultList();
 
@@ -54,9 +55,10 @@ public class PasswordService implements PasswordDBAccess{
 
     @Override
     public boolean userHasPasswordFor(User user, String websiteUrl) {
-        TypedQuery<UserPasswordPair> query = entityManager.createQuery("SELECT FROM users-passwords " +
-                                                                    "WHERE user_id=:idParam " +
-                                                                    "AND url=:urlParam", UserPasswordPair.class);
+        TypedQuery<UserPasswordPair> query = entityManager.createQuery("SELECT p FROM UserPasswordPair p " +
+                                                                    "WHERE p.user.id=:idParam " +
+                                                                    "AND p.websiteUrl=:urlParam",
+                UserPasswordPair.class);
         query.setParameter("idParam", user.getId());
         query.setParameter("urlParam", websiteUrl);
         return !query.getResultList().isEmpty();
@@ -65,8 +67,8 @@ public class PasswordService implements PasswordDBAccess{
 
     @Override
     public Optional<UserPasswordPair> findById(UUID id) {
-        TypedQuery<UserPasswordPair> query = entityManager.createQuery("SELECT FROM users-passwords " +
-                                                                    "WHERE id=:idParam", UserPasswordPair.class);
+        TypedQuery<UserPasswordPair> query = entityManager.createQuery("SELECT p FROM UserPasswordPair p " +
+                                                                    "WHERE p.id=:idParam", UserPasswordPair.class);
         query.setParameter("idParam", id);
         try{
             return Optional.ofNullable(query.getSingleResult());
@@ -79,9 +81,9 @@ public class PasswordService implements PasswordDBAccess{
     @Override
     public Optional<UserPasswordPair> findPasswordOf(User user, String url) {
         TypedQuery<UserPasswordPair> query = entityManager.createQuery(
-                "SELECT FROM users-passwords " +
-                        "WHERE user_id=:idParam " +
-                        "AND url=:urlParam"
+                "SELECT p FROM UserPasswordPair p " +
+                        "WHERE p.user.id=:idParam " +
+                        "AND p.websiteUrl=:urlParam"
         , UserPasswordPair.class);
         query.setParameter("idParam", user.getId());
         query.setParameter("urlParam", url);
