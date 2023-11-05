@@ -1,5 +1,6 @@
-package com.example.passman.database;
+package com.example.passman.database.Service;
 
+import com.example.passman.database.DAO.PasswordRepository;
 import com.example.passman.entities.User;
 import com.example.passman.entities.UserPasswordPair;
 
@@ -10,34 +11,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class PasswordService implements PasswordDBAccess{
+public class PasswordServiceImpl implements PasswordService {
 
     private final EntityManager entityManager;
+    private final PasswordRepository passwordRepository;
 
     @Autowired
-    public PasswordService(EntityManager entityManager) {
+    public PasswordServiceImpl(EntityManager entityManager, PasswordRepository passwordRepository) {
         this.entityManager = entityManager;
+        this.passwordRepository = passwordRepository;
     }
 
 
     @Override
     public Optional<String> getPasswordById(UUID id) {
-        TypedQuery<String> query = entityManager.createQuery("SELECT p.password FROM UserPasswordPair p " +
-                "WHERE p.id=:idParam", String.class);
-        query.setParameter("idParam", id);
-
-        try{
-            return Optional.ofNullable(query.getSingleResult());
-        }
-        catch(NoResultException e){
-            return Optional.empty();
-        }
+        Optional<UserPasswordPair> pair = findById(id);
+        return pair.map(UserPasswordPair::getPassword);
     }
 
 
@@ -67,15 +61,7 @@ public class PasswordService implements PasswordDBAccess{
 
     @Override
     public Optional<UserPasswordPair> findById(UUID id) {
-        TypedQuery<UserPasswordPair> query = entityManager.createQuery("SELECT p FROM UserPasswordPair p " +
-                                                                    "WHERE p.id=:idParam", UserPasswordPair.class);
-        query.setParameter("idParam", id);
-        try{
-            return Optional.ofNullable(query.getSingleResult());
-        }
-        catch(NoResultException e){
-            return Optional.empty();
-        }
+        return passwordRepository.findById(id);
     }
 
     @Override

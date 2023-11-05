@@ -1,6 +1,8 @@
-package com.example.passman.database;
+package com.example.passman.database.DAO;
 
 import com.example.passman.entities.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -8,9 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserDBAccess {
-
-    Optional<User> findByID(UUID id);
+public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByUsername(String username);
 
@@ -18,6 +18,5 @@ public interface UserDBAccess {
 
     void updateUsername(Optional<User> user, String newName);
 
-    List<User> findPasswordsByJoinFetch(String username);
-
+    List<User> findPasswords(String username);
 }

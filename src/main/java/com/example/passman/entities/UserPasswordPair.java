@@ -36,7 +36,7 @@ public class UserPasswordPair {
                                                 CascadeType.DETACH,
                                                 CascadeType.PERSIST,
                                                 CascadeType.REFRESH})
-    @JoinColumns({
+    @JoinColumns(value = {
             @JoinColumn(name = "username", referencedColumnName = "username"),
             @JoinColumn(name = "user_id", referencedColumnName = "id")
     })

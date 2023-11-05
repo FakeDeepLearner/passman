@@ -1,5 +1,6 @@
-package com.example.passman.database;
+package com.example.passman.database.Service;
 
+import com.example.passman.database.DAO.UserRepository;
 import com.example.passman.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -12,21 +13,28 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserService implements UserDBAccess{
+public class UserServiceImpl implements UserService {
 
     private final EntityManager entityManager;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public UserService(EntityManager entityManager) {
+    public UserServiceImpl(EntityManager entityManager, UserRepository userRepository) {
         this.entityManager = entityManager;
+        this.userRepository = userRepository;
+    }
+
+
+    @Override
+    public Optional<User> findById(UUID id) {
+        return userRepository.findById(id);
     }
 
     @Override
-    public Optional<User> findByID(UUID id) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.id=:idParam", User.class);
-        query.setParameter("idParam", id);
-        return Optional.ofNullable(query.getSingleResult());
-
+    public Optional<String> getUsernameById(UUID id) {
+        Optional<User> optionalUser = findById(id);
+        return optionalUser.map(User::getUsername);
     }
 
     @Override
@@ -59,7 +67,7 @@ public class UserService implements UserDBAccess{
     }
 
     @Override
-    public List<User> findPasswordsByJoinFetch(String username) {
+    public List<User> findPasswords(String username) {
         TypedQuery<User> query = entityManager.createQuery(
                 "SELECT u FROM User u " +
                 "JOIN FETCH u.passwordPairs " +
