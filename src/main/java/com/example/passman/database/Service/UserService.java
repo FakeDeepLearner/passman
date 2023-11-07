@@ -8,11 +8,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
-
     Optional<User> findById(UUID id);
     Optional<String> getUsernameById(UUID id);
     Optional<User> findByUsername(String username);
-
+    Optional<User> findByEmail(String email);
     @Transactional
     void updatePassword(Optional<User> user, String newPassword);
 

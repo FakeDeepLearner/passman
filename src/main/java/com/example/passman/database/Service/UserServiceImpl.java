@@ -3,6 +3,7 @@ package com.example.passman.database.Service;
 import com.example.passman.database.DAO.UserRepository;
 import com.example.passman.entities.User;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -43,7 +44,26 @@ public class UserServiceImpl implements UserService {
                 "SELECT u FROM User u WHERE u.username=:usernameParam", User.class
         );
         query.setParameter("usernameParam", username);
-        return Optional.ofNullable(query.getSingleResult());
+        try{
+            return Optional.ofNullable(query.getSingleResult());
+        }
+        catch (NoResultException exception){
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        TypedQuery<User> query = entityManager.createQuery(
+                "SELECT u FROM User u WHERE u.email=:emailParam", User.class
+        );
+        query.setParameter("emailParam", email);
+        try{
+            return Optional.ofNullable(query.getSingleResult());
+        }
+        catch (NoResultException exception){
+            return Optional.empty();
+        }
     }
 
     @Override

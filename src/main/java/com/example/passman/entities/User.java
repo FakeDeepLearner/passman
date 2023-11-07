@@ -36,6 +36,14 @@ public class User {
     private String password;
 
 
+    @Column(
+            nullable = false,
+            unique = true
+    )
+    @NonNull
+    private String email;
+
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<UserPasswordPair> passwordPairs;
 
