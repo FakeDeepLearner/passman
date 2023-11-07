@@ -44,7 +44,12 @@ public class User {
     private String email;
 
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REMOVE,
+            CascadeType.REFRESH
+    }, mappedBy = "user")
     private List<UserPasswordPair> passwordPairs;
 
 

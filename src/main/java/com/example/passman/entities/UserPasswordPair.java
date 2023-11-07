@@ -33,7 +33,6 @@ public class UserPasswordPair {
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,
-                                                CascadeType.DETACH,
                                                 CascadeType.PERSIST,
                                                 CascadeType.REFRESH})
     @JoinColumns(value = {
