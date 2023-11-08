@@ -96,4 +96,13 @@ public class UserServiceImpl implements UserService {
         return query.getResultList();
 
     }
+
+    @Override
+    public boolean signUpUser(String name, String password, String email) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodedPassword = encoder.encode(password);
+        User newUser = new User(name, encodedPassword, email);
+        entityManager.persist(newUser);
+        return true;
+    }
 }

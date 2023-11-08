@@ -19,4 +19,6 @@ public interface UserService {
     void updateUsername(Optional<User> user, String newName);
 
     List<User> findPasswords(String username);
+
+    boolean signUpUser(String name, String password, String email);
 }
