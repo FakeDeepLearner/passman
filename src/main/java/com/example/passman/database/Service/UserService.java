@@ -1,12 +1,14 @@
 package com.example.passman.database.Service;
 
 import com.example.passman.entities.User;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public interface UserService {
     Optional<User> findById(UUID id);
     Optional<String> getUsernameById(UUID id);
