@@ -105,4 +105,24 @@ public class UserServiceImpl implements UserService {
         entityManager.persist(newUser);
         return true;
     }
+
+    @Override
+    public boolean logInUser(String nameOrEmail, String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        Optional<User> foundUserUsername = findByUsername(nameOrEmail);
+        Optional<User> foundUserEmail = findByEmail(nameOrEmail);
+        if (foundUserUsername.isEmpty() && foundUserEmail.isEmpty()){
+            return false;
+        } else if (foundUserUsername.isEmpty()) {
+            User foundUser = foundUserEmail.get();
+            String encodedPassword = encoder.encode(password);
+            return foundUser.getPassword().equals(encodedPassword);
+        }
+        else if (foundUserEmail.isEmpty()) {
+            User foundUser = foundUserUsername.get();
+            String encodedPassword = encoder.encode(password);
+            return foundUser.getPassword().equals(encodedPassword);
+        }
+        return false;
+    }
 }

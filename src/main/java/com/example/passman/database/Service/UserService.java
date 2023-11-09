@@ -20,5 +20,8 @@ public interface UserService {
 
     List<User> findPasswords(String username);
 
+    @Transactional
     boolean signUpUser(String name, String password, String email);
+
+    boolean logInUser(String nameOrEmail, String password);
 }
