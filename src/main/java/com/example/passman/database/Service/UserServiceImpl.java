@@ -5,6 +5,7 @@ import com.example.passman.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -98,12 +99,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean signUpUser(String name, String password, String email) {
+    public int signUpUser(String name, String password, String email) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encodedPassword = encoder.encode(password);
         User newUser = new User(name, encodedPassword, email);
-        entityManager.persist(newUser);
-        return true;
+        try {
+            entityManager.persist(newUser);
+            return 0;
+        }
+        catch(ConstraintViolationException violationException){
+            String constraintName = violationException.getConstraintName();
+            return switch (constraintName) {
+                case "uk_username" -> 1;
+                case "uk_email" -> 2;
+                default -> 3;
+
+            };
+        }
+
     }
 
     @Override

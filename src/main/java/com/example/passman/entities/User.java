@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_username", columnNames = {"username"}),
+        @UniqueConstraint(name = "uk_email", columnNames = {"email"})
+})
 @RequiredArgsConstructor
 @Data
 @NoArgsConstructor
@@ -19,7 +22,7 @@ public class User {
 
     @Column(
             nullable = false,
-            unique = true
+            name = "username"
     )
     @NonNull
     private String username;
@@ -30,7 +33,8 @@ public class User {
      * This is the password that the user has to the application itself
      * */
     @Column(
-            nullable = false
+            nullable = false,
+            name = "password"
     )
     @NonNull
     private String password;
@@ -38,7 +42,7 @@ public class User {
 
     @Column(
             nullable = false,
-            unique = true
+            name = "email"
     )
     @NonNull
     private String email;
