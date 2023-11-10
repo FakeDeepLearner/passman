@@ -39,7 +39,7 @@ public class LoginAndSignupController {
             return ResponseEntity.status(409).headers(headers).
                     body(new SignUpReturnType(signupForm.username(), signupForm.password(), signupForm.email()));
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(204).build();
 
     }
 
