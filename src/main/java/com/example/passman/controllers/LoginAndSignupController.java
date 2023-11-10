@@ -7,6 +7,7 @@ import com.example.passman.entities.SignupForm;
 import com.example.passman.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,13 +30,13 @@ public class LoginAndSignupController {
         if (signedUp == 1){
             HttpHeaders headers = new HttpHeaders();
             headers.add("username-taken", "Username is already taken");
-            return ResponseEntity.internalServerError().headers(headers).
+            return ResponseEntity.status(409).headers(headers).
                     body(new SignUpReturnType(signupForm.username(), signupForm.password(), signupForm.email()));
         }
         if (signedUp == 2){
             HttpHeaders headers = new HttpHeaders();
             headers.add("email-taken", "Email is already taken");
-            return ResponseEntity.internalServerError().headers(headers).
+            return ResponseEntity.status(409).headers(headers).
                     body(new SignUpReturnType(signupForm.username(), signupForm.password(), signupForm.email()));
         }
         return ResponseEntity.ok().build();
