@@ -1,13 +1,13 @@
 package com.example.passman.controllers;
 
 import com.example.passman.database.Service.UserService;
-import com.example.passman.entities.LoginForm;
-import com.example.passman.entities.SignUpReturnType;
-import com.example.passman.entities.SignupForm;
-import com.example.passman.entities.User;
+import com.example.passman.entities.forms.LoginForm;
+import com.example.passman.entities.forms.SignUpReturnType;
+import com.example.passman.entities.forms.SignupForm;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +24,7 @@ public class LoginAndSignupController {
 
 
     @PostMapping("/passman/signup")
-    public ResponseEntity<SignUpReturnType> signUpUser(@RequestBody SignupForm signupForm){
+    public ResponseEntity<SignUpReturnType> signUpUser(@Valid @RequestBody SignupForm signupForm){
         int signedUp =
                 userService.signUpUser(signupForm.username(), signupForm.password(), signupForm.email());
         if (signedUp == 1){
