@@ -25,20 +25,7 @@ public class LoginAndSignupController {
 
     @PostMapping("/passman/signup")
     public ResponseEntity<SignUpReturnType> signUpUser(@Valid @RequestBody SignupForm signupForm){
-        int signedUp =
-                userService.signUpUser(signupForm.username(), signupForm.password(), signupForm.email());
-        if (signedUp == 1){
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("username-taken", "Username is already taken");
-            return ResponseEntity.status(409).headers(headers).
-                    body(new SignUpReturnType(signupForm.username(), signupForm.password(), signupForm.email()));
-        }
-        if (signedUp == 2){
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("email-taken", "Email is already taken");
-            return ResponseEntity.status(409).headers(headers).
-                    body(new SignUpReturnType(signupForm.username(), signupForm.password(), signupForm.email()));
-        }
+        userService.signUpUser(signupForm);
         return ResponseEntity.status(204).build();
 
     }

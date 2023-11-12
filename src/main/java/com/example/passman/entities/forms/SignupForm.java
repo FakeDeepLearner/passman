@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record SignupForm(@NotBlank(message = "Username can't be empty") String username,
-                         @Email String email,
+                         @Email(message = "The email address must be valid") String email,
                          @SignUpPasswordConstraint String password)
         implements ConstraintValidator<SignUpPasswordConstraint, String> {
 

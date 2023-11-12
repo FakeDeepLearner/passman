@@ -2,6 +2,9 @@ package com.example.passman.database.Service;
 
 import com.example.passman.database.DAO.UserRepository;
 import com.example.passman.entities.User;
+import com.example.passman.entities.forms.SignupForm;
+import com.example.passman.exceptions.DuplicateEmailException;
+import com.example.passman.exceptions.DuplicateUsernameException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
@@ -99,20 +102,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int signUpUser(String name, String password, String email) {
+    @Transactional
+    public void signUpUser(SignupForm signupForm) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode(password);
-        User newUser = new User(name, encodedPassword, email);
+        String encodedPassword = encoder.encode(signupForm.password());
+        User newUser = new User(signupForm.username(), encodedPassword, signupForm.email());
         try {
             entityManager.persist(newUser);
-            return 0;
         }
         catch(ConstraintViolationException violationException){
             String constraintName = violationException.getConstraintName();
-            return switch (constraintName) {
-                case "uk_username" -> 1;
-                case "uk_email" -> 2;
-                default -> 3;
+            switch (constraintName) {
+                case "uk_username" -> throw new DuplicateUsernameException(signupForm);
+                case "uk_email" -> throw new DuplicateEmailException(signupForm);
 
             };
         }
