@@ -6,9 +6,12 @@ import com.example.passman.entities.forms.SignUpReturnType;
 import com.example.passman.entities.forms.SignupForm;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginAndSignupController {
     private final UserService userService;
-
     @Autowired
     public LoginAndSignupController(UserService userService) {
         this.userService = userService;
     }
 
+    @InitBinder
+    public void trimWhitespace(WebDataBinder binder){
+        binder.registerCustomEditor(SignupForm.class, "username", new StringTrimmerEditor(true));
+        binder.registerCustomEditor(SignupForm.class, "email", new StringTrimmerEditor(true));
+        binder.registerCustomEditor(SignupForm.class, "password", new StringTrimmerEditor(true));
 
+    }
     @PostMapping("/passman/signup")
     public ResponseEntity<SignUpReturnType> signUpUser(@Valid @RequestBody SignupForm signupForm){
         userService.signUpUser(signupForm);
