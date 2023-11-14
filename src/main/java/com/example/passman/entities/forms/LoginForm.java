@@ -1,4 +1,6 @@
 package com.example.passman.entities.forms;
 
-public record LoginForm(String usernameOrEmail,  String password) {
+import com.example.passman.entities.forms.validators.UsernameOrEmailConstraint;
+
+public record LoginForm(@UsernameOrEmailConstraint String usernameOrEmail, String password) {
 }
