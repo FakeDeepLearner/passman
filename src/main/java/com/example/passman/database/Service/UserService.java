@@ -1,6 +1,7 @@
 package com.example.passman.database.Service;
 
 import com.example.passman.entities.User;
+import com.example.passman.entities.forms.LoginForm;
 import com.example.passman.entities.forms.SignupForm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,5 +27,5 @@ public interface UserService {
     @Transactional
     void signUpUser(SignupForm signupForm);
 
-    boolean logInUser(String nameOrEmail, String password);
+    void logInUser(LoginForm loginForm);
 }

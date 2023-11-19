@@ -2,9 +2,13 @@ package com.example.passman.database.Service;
 
 import com.example.passman.database.DAO.UserRepository;
 import com.example.passman.entities.User;
+import com.example.passman.entities.forms.LoginForm;
 import com.example.passman.entities.forms.SignupForm;
-import com.example.passman.exceptions.DuplicateEmailException;
-import com.example.passman.exceptions.DuplicateUsernameException;
+import com.example.passman.exceptions.login.InvalidEmailException;
+import com.example.passman.exceptions.login.InvalidUsernameException;
+import com.example.passman.exceptions.login.PasswordMismatchException;
+import com.example.passman.exceptions.signup.DuplicateEmailException;
+import com.example.passman.exceptions.signup.DuplicateUsernameException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -122,22 +127,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean logInUser(String nameOrEmail, String password) {
+    public void logInUser(LoginForm loginForm) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        Optional<User> foundUserUsername = findByUsername(nameOrEmail);
-        Optional<User> foundUserEmail = findByEmail(nameOrEmail);
-        if (foundUserUsername.isEmpty() && foundUserEmail.isEmpty()){
-            return false;
-        } else if (foundUserUsername.isEmpty()) {
-            User foundUser = foundUserEmail.get();
-            String encodedPassword = encoder.encode(password);
-            return foundUser.getPassword().equals(encodedPassword);
+        String hashedPassword = encoder.encode(loginForm.password());
+        Optional<User> foundUser;
+        if (loginForm.isInputEmail()) {
+            foundUser = findByEmail(loginForm.usernameOrEmail());
+            if (foundUser.isEmpty()){
+                throw new InvalidEmailException(loginForm);
+            }
+
+
         }
-        else if (foundUserEmail.isEmpty()) {
-            User foundUser = foundUserUsername.get();
-            String encodedPassword = encoder.encode(password);
-            return foundUser.getPassword().equals(encodedPassword);
+        else{
+            foundUser = findByUsername(loginForm.usernameOrEmail());
+            if (foundUser.isEmpty()){
+                throw new InvalidUsernameException(loginForm);
+            }
         }
-        return false;
+
+        if (!(foundUser.get().getPassword().equals(hashedPassword))){
+            throw new PasswordMismatchException(loginForm);
+        }
     }
 }

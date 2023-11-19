@@ -1,4 +1,4 @@
-package com.example.passman.exceptions;
+package com.example.passman.exceptions.signup;
 
 import com.example.passman.entities.forms.SignupForm;
 
