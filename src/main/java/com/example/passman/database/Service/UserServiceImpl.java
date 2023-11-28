@@ -118,8 +118,8 @@ public class UserServiceImpl implements UserService {
         catch(ConstraintViolationException violationException){
             String constraintName = violationException.getConstraintName();
             switch (constraintName) {
-                case "uk_username" -> throw new DuplicateUsernameException(signupForm);
-                case "uk_email" -> throw new DuplicateEmailException(signupForm);
+                case "uk_username" -> throw new DuplicateUsernameException(signupForm, "Username is already taken");
+                case "uk_email" -> throw new DuplicateEmailException(signupForm, "Email is already taken");
 
             };
         }
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
         if (loginForm.isInputEmail()) {
             foundUser = findByEmail(loginForm.usernameOrEmail());
             if (foundUser.isEmpty()){
-                throw new InvalidEmailException(loginForm);
+                throw new InvalidEmailException(loginForm, "A user wasn't found with this email address");
             }
 
 
@@ -142,12 +142,12 @@ public class UserServiceImpl implements UserService {
         else{
             foundUser = findByUsername(loginForm.usernameOrEmail());
             if (foundUser.isEmpty()){
-                throw new InvalidUsernameException(loginForm);
+                throw new InvalidUsernameException(loginForm, "A user wasn't found with this username");
             }
         }
 
         if (!(foundUser.get().getPassword().equals(hashedPassword))){
-            throw new PasswordMismatchException(loginForm);
+            throw new PasswordMismatchException(loginForm, "Incorrect Password");
         }
     }
 }
