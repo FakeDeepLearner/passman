@@ -8,7 +8,9 @@ import com.example.passman.exceptions.login.InvalidUsernameException;
 import com.example.passman.exceptions.login.PasswordMismatchException;
 import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -18,9 +20,10 @@ public class LoginExceptionHandler {
     @ExceptionHandler(PasswordMismatchException.class)
     protected ResponseEntity<LoginReturnType> handlePasswordMismatch(@NonNull PasswordMismatchException exception){
         LoginForm form = exception.getBadForm();
-
-        return ResponseEntity.status(409).body(new LoginReturnType(
-                form.usernameOrEmail(), form.password(), exception.getExceptionMessage()
+        HttpHeaders unauthorizedHeaders = new HttpHeaders();
+        unauthorizedHeaders.add("WWW-Authenticate", "Basic realm=Logging In");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).headers(unauthorizedHeaders).body(new LoginReturnType(
+                form.usernameOrEmail(), form.password(), exception.getMessage()
         ));
 
     }
@@ -28,8 +31,8 @@ public class LoginExceptionHandler {
     @ExceptionHandler(InvalidEmailException.class)
     protected ResponseEntity<LoginReturnType> handleInvalidEmail(@NonNull InvalidEmailException exception){
         LoginForm form = exception.getBadForm();
-        return ResponseEntity.status(409).body(new LoginReturnType(
-                form.usernameOrEmail(), form.password(), exception.getExceptionMessage()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginReturnType(
+                form.usernameOrEmail(), form.password(), exception.getMessage()
         ));
 
     }
@@ -37,8 +40,8 @@ public class LoginExceptionHandler {
     @ExceptionHandler(InvalidUsernameException.class)
     protected ResponseEntity<LoginReturnType> handleInvalidUsername(@NonNull InvalidUsernameException exception){
         LoginForm form = exception.getBadForm();
-        return ResponseEntity.status(409).body(new LoginReturnType(
-                form.usernameOrEmail(), form.password(), exception.getExceptionMessage()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginReturnType(
+                form.usernameOrEmail(), form.password(), exception.getMessage()
         ));
 
     }

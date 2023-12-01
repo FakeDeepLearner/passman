@@ -108,12 +108,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void signUpUser(SignupForm signupForm) {
+    public boolean checkUserSignup(SignupForm signupForm) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encodedPassword = encoder.encode(signupForm.password());
         User newUser = new User(signupForm.username(), encodedPassword, signupForm.email());
         try {
             entityManager.persist(newUser);
+
         }
         catch(ConstraintViolationException violationException){
             String constraintName = violationException.getConstraintName();
@@ -123,11 +124,11 @@ public class UserServiceImpl implements UserService {
 
             };
         }
-
+        return true;
     }
 
     @Override
-    public void logInUser(LoginForm loginForm) {
+    public boolean checkUserLogin(LoginForm loginForm) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String hashedPassword = encoder.encode(loginForm.password());
         Optional<User> foundUser;
@@ -136,7 +137,6 @@ public class UserServiceImpl implements UserService {
             if (foundUser.isEmpty()){
                 throw new InvalidEmailException(loginForm, "A user wasn't found with this email address");
             }
-
 
         }
         else{
@@ -149,5 +149,6 @@ public class UserServiceImpl implements UserService {
         if (!(foundUser.get().getPassword().equals(hashedPassword))){
             throw new PasswordMismatchException(loginForm, "Incorrect Password");
         }
+        return true;
     }
 }

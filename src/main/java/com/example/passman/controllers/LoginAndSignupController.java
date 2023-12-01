@@ -7,6 +7,7 @@ import com.example.passman.entities.forms.SignupForm;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +29,17 @@ public class LoginAndSignupController {
     }
     @PostMapping("/passman/signup")
     public ResponseEntity<SignUpReturnType> signUpUser(@Valid @RequestBody SignupForm signupForm){
-        userService.signUpUser(signupForm);
-        return ResponseEntity.ok().build();
+        if(userService.checkUserSignup(signupForm)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @PostMapping("/passman/login")
-    public ResponseEntity<SignUpReturnType> logInUser(@Valid @RequestBody LoginForm loginForm){
-        userService.logInUser(loginForm);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SignUpReturnType> logInUser(@Valid @RequestBody LoginForm loginForm) {
+        if (userService.checkUserLogin(loginForm)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }

@@ -25,7 +25,7 @@ public interface UserService {
     List<User> findPasswords(String username);
 
     @Transactional
-    void signUpUser(SignupForm signupForm);
+    boolean checkUserSignup(SignupForm signupForm);
 
-    void logInUser(LoginForm loginForm);
+    boolean checkUserLogin(LoginForm loginForm);
 }
