@@ -28,4 +28,6 @@ public interface UserService {
     boolean checkUserSignup(SignupForm signupForm);
 
     boolean checkUserLogin(LoginForm loginForm);
+
+    void createNewUser(SignupForm signupForm);
 }

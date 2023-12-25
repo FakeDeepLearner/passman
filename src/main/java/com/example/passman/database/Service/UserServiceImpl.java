@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -150,5 +151,14 @@ public class UserServiceImpl implements UserService {
             throw new PasswordMismatchException(loginForm, "Incorrect Password");
         }
         return true;
+    }
+
+    @Override
+    @Transactional
+    public void createNewUser(SignupForm signupForm) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodedPassword = encoder.encode(signupForm.password());
+        User newUser = new User(signupForm.username(), encodedPassword, signupForm.email());
+        entityManager.persist(newUser);
     }
 }

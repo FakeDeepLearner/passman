@@ -28,15 +28,16 @@ public class LoginAndSignupController {
 
     }
     @PostMapping("/passman/signup")
-    public ResponseEntity<SignUpReturnType> signUpUser(@Valid @RequestBody SignupForm signupForm){
+    public ResponseEntity<SignUpReturnType> checkUserSignUp(@Valid @RequestBody SignupForm signupForm){
         if(userService.checkUserSignup(signupForm)) {
+            userService.createNewUser(signupForm);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @PostMapping("/passman/login")
-    public ResponseEntity<SignUpReturnType> logInUser(@Valid @RequestBody LoginForm loginForm) {
+    public ResponseEntity<SignUpReturnType> checkUserLogin(@Valid @RequestBody LoginForm loginForm) {
         if (userService.checkUserLogin(loginForm)) {
             return ResponseEntity.ok().build();
         }
