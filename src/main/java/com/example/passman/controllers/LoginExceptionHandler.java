@@ -33,7 +33,7 @@ public class LoginExceptionHandler {
         LoginForm form = exception.getBadForm();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LoginReturnType(
                 form.usernameOrEmail(), form.password(), exception.getMessage()
-        ));
+        ))
 
     }
 
