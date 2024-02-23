@@ -30,4 +30,7 @@ public interface UserService {
     boolean checkUserLogin(LoginForm loginForm);
 
     void createNewUser(SignupForm signupForm);
+
+    void addNewPassword(UUID id, String url, String newPassword);
+
 }

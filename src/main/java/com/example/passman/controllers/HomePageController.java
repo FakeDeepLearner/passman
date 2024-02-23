@@ -7,9 +7,7 @@ import com.example.passman.entities.UserPasswordPair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,4 +33,12 @@ public class HomePageController {
                         ResponseEntity.ok(passwordService.findAllPasswordsOf(user))).
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/api/addpassword")
+    public ResponseEntity addPassword(@RequestParam UUID userID, @RequestParam String newPassword,
+                                        @RequestParam String websiteUrl){
+        userService.addNewPassword(userID, websiteUrl, newPassword);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.passman.database.Service;
 
 import com.example.passman.database.DAO.UserRepository;
 import com.example.passman.entities.User;
+import com.example.passman.entities.UserPasswordPair;
 import com.example.passman.entities.forms.LoginForm;
 import com.example.passman.entities.forms.SignupForm;
 import com.example.passman.exceptions.login.InvalidEmailException;
@@ -17,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -160,5 +161,17 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = encoder.encode(signupForm.password());
         User newUser = new User(signupForm.username(), encodedPassword, signupForm.email());
         entityManager.persist(newUser);
+    }
+
+    @Override
+    public void addNewPassword(UUID id, String url, String newPassword) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        Optional<User> userOptional = findById(id);
+        if(userOptional.isPresent()){
+            List<UserPasswordPair> userPasswordPairs = userOptional.get().getPasswordPairs();
+            UserPasswordPair newPair = new UserPasswordPair(url, encoder.encode(newPassword));
+            userOptional.get().setPasswordPairs(userPasswordPairs);
+            entityManager.merge(userOptional.get());
+        }
     }
 }
